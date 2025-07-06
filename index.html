@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Convertisseur de vitesse</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- React, ReactDOM, Babel CDN -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <!-- App code -->
+    <script type="text/babel">
+      const { useState } = React;
+
+      function SpeedInput({ value, onChange, placeholder }) {
+        return <input type="number" value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />;
+      }
+      function SpeedButtons({ onKmhToMs, onMsToKmh, labelKmhToMs, labelMsToKmh }) {
+        return (
+          <div className="buttons">
+            <button onClick={onKmhToMs}>{labelKmhToMs}</button>
+            <button onClick={onMsToKmh}>{labelMsToKmh}</button>
+          </div>
+        );
+      }
+      function SpeedResult({ value, placeholder }) {
+        return <input type="text" value={value} readOnly placeholder={placeholder} />;
+      }
+      function App() {
+        const [inputValue, setInputValue] = useState("");
+        const [result, setResult] = useState("");
+
+        function convertKmhToMs(speed) {
+          return (speed / 3.6).toFixed(1) + " m/s";
+        }
+
+        function convertMsToKmh(speed) {
+          return (speed * 3.6).toFixed(1) + " km/h";
+        }
+
+        function handleKmhToMs() {
+          if (inputValue === "" || isNaN(inputValue)) {
+            setResult("Veuillez entrer une valeur valide");
+            return;
+          }
+          setResult(convertKmhToMs(Number(inputValue)));
+        }
+
+        function handleMsToKmh() {
+          if (inputValue === "" || isNaN(inputValue)) {
+            setResult("Veuillez entrer une valeur valide");
+            return;
+          }
+          setResult(convertMsToKmh(Number(inputValue)));
+        }
+
+        return (
+          <div className="container">
+            <h1>Convertisseur de vitesse</h1>
+            <SpeedInput value={inputValue} onChange={setInputValue} placeholder="Entrez la vitesse" />
+            <SpeedButtons onKmhToMs={handleKmhToMs} onMsToKmh={handleMsToKmh} labelKmhToMs="km/h → m/s" labelMsToKmh="m/s → km/h" />
+            <SpeedResult value={result} placeholder="Résultat" />
+          </div>
+        );
+      }
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>
